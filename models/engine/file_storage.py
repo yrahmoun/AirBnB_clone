@@ -4,6 +4,12 @@
 import json
 import os
 from models.base_model import BaseModel
+from models.user import User
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
+from models.amenity import Amenity
 
 
 class FileStorage:
@@ -26,10 +32,10 @@ class FileStorage:
         """ serializes __objects to the JSON file """
         serialized_objects = {
                 key: value.to_dict()
-                for key, value in self.__objects.items()
+                for key, value in FileStorage.__objects.items()
         }
         with open(FileStorage.__file_path, "w") as f:
-            f.write(json.dumps(serialized_objects))
+            json.dump(serialized_objects, f)
 
     def reload(self):
         """ deserializes the JSON file to __objects """
