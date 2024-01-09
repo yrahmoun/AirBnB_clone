@@ -40,7 +40,9 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, arg):
-        """Creates a new instance of valid classes"""
+        """Creates a new instance of a valid class,
+        saves it (to the JSON file) and prints the id.
+        Ex: $ create BaseModel"""
         if not arg:
             print("** class name missing **")
             return
@@ -51,6 +53,31 @@ class HBNBCommand(cmd.Cmd):
         instance = HBNBCommand.valid_classes[cls_to_create[0]]()
         instance.save()
         print(instance.id)
+
+    def do_show(self, arg):
+        """
+        Prints the string representation of an instance
+        based on the class name and id.
+        Ex: $show BaseModel 1234-1234-1234.
+        """
+        tokens = shlex.split(arg)
+        if len(tokens) == 0:
+            print("** class name missing **")
+            return
+        if tokens[0] not in HBNBCommand.valid_classes.keys():
+            print("** class doesn't exist **")
+            return
+        if len(tokens) <= 1:
+            print("** instance id missing **")
+            return
+        storage.reload()
+        all_objects = storage.all()
+        key = tokens[0] + "." + tokens[1]
+        if key in all_objects:
+            str_to_show = str(all_objects[key])
+            print(str_to_show)
+        else:
+            print("** no instance found **")
 
 
 if __name__ == "__main__":
