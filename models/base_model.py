@@ -12,6 +12,8 @@ class BaseModel:
         """intializes a new instance of the clas"""
         if kwargs is not None and kwargs != {}:
             for key in kwargs:
+                if key == '__class__':
+                    continue
                 if key == "created_at":
                     self.__dict__["created_at"] = datetime.strptime(
                         kwargs["created_at"], "%Y-%m-%dT%H:%M:%S.%f"
