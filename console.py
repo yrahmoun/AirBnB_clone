@@ -2,6 +2,7 @@
 """ contains the entry point of the command interpreter """
 import cmd
 import shlex
+import json
 from models.amenity import Amenity
 from models.base_model import BaseModel
 from models import storage
@@ -103,6 +104,32 @@ class HBNBCommand(cmd.Cmd):
             storage.save()
         else:
             print("** no instance found **")
+
+    def do_all(self, arg):
+        """
+        Prints all string representation of all instances based
+        or not on the class name.
+        Ex: $ all BaseModel or $ all.
+        """
+
+        storage.reload()
+        result_list = []
+        all_objects = storage.all()
+
+        if not arg:
+            for key in all_objects:
+                result_list.append(str(all_objects[key]))
+            print(json.dumps(result_list))
+            return
+
+        token = shlex.split(arg)
+        if token[0] in HBNBCommand.valid_classes.keys():
+            for key in all_objects:
+                if token[0] in key:
+                    result_list.append(str(all_objects[key]))
+            print(json.dumps(result_list))
+        else:
+            print("** class doesn't exist **")
 
 
 if __name__ == "__main__":
