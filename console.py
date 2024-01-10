@@ -11,6 +11,7 @@ from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
+from datetime import datetime
 
 
 class HBNBCommand(cmd.Cmd):
@@ -130,6 +131,46 @@ class HBNBCommand(cmd.Cmd):
             print(json.dumps(result_list))
         else:
             print("** class doesn't exist **")
+
+    def do_update(self, arg):
+        """
+        Updates an instance based on the class name
+        and id by adding or updating attribute
+        Ex: $ update BaseModel 1234-1234-1234 email "aibnb@mail.com".
+        """
+        tokens = shlex.split(arg)
+        if len(tokens) == 0:
+            print("** class name missing **")
+            return
+        if tokens[0] not in HBNBCommand.valid_classes.keys():
+            print("** class doesn't exist **")
+            return
+        if len(tokens) <= 1:
+            print("** instance id missing **")
+            return
+        if len(tokens) <= 2:
+            print("** attribute name missing **")
+            return
+        if len(tokens) <= 3:
+            print("** value missing **")
+            return
+        all_objects = storage.all()
+        key = tokens[0] + "." + tokens[1]
+        if key not in all_objects:
+            print("** no instance found **")
+            return
+        attr_name = tokens[2]
+        attr_value = tokens[3]
+        instance = all_objects[key]
+        if attr_name in ("id", "updated_at", "created_at"):
+            return
+        if attr_name in instance.__dict__:
+            attr_type = type(instance.__dict__[attr_name])
+            instance.__dict__[attr_name] = attr_type(attr_value)
+        else:
+            instance.__dict__[attr_name] = attr_value
+        instance.updated_at = datetime.utcnow()
+        instance.save()
 
 
 if __name__ == "__main__":
