@@ -414,7 +414,7 @@ class TestConsoleClass(unittest.TestCase):
             self.assertTrue(int(val.getvalue()) == 1)
 
     def test_alternative_destroy(self):
-        """Test alternative destroy with [class].destroy(id)"""
+        """Test alternative destroy with <[class]>.destroy(id)"""
         with patch("sys.stdout", new=StringIO()) as val:
             HBNBCommand().onecmd("create User")
             user_id = val.getvalue().strip()
