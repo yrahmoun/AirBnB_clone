@@ -41,8 +41,11 @@ class FileStorage:
         """ deserializes the JSON file to __objects """
         if os.path.exists(FileStorage.__file_path):
             with open(FileStorage.__file_path, 'r') as f:
-                data = json.load(f)
-                for key, obj_dict in data.items():
-                    class_name, obj_id = key.split('.')
-                    class_instance = eval(class_name)(**obj_dict)
-                    FileStorage.__objects[key] = class_instance
+                try:
+                    data = json.load(f)
+                    for key, obj_dict in data.items():
+                        class_name, obj_id = key.split('.')
+                        class_instance = eval(class_name)(**obj_dict)
+                        FileStorage.__objects[key] = class_instance
+                except Exception:
+                    pass
