@@ -2,7 +2,6 @@
 """ defines the BaseModel class """
 import uuid
 from datetime import datetime
-import models
 
 
 class BaseModel:
@@ -25,10 +24,11 @@ class BaseModel:
                 else:
                     self.__dict__[key] = kwargs[key]
         else:
+            from models import storage
             self.id = str(uuid.uuid4())
-            self.created_at = datetime.utcnow()
-            self.updated_at = datetime.utcnow()
-            models.storage.new(self)
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
+            storage.new(self)
 
     def __str__(self):
         """return a string representation of BaseModel instance"""
@@ -37,13 +37,14 @@ class BaseModel:
 
     def save(self):
         """changes the updated_at attribute"""
+        from models import storage
         self.updated_at = datetime.utcnow()
-        models.storage.save()
+        storage.save()
 
     def to_dict(self):
         """converts the BaseModel instance to a dictionary"""
-        dct = self.__dict__.copy()
-        dct["__class__"] = self.__class__.__name__
-        dct["created_at"] = self.created_at.isoformat()
-        dct["updated_at"] = self.updated_at.isoformat()
+        dct = {**self.__dict__}
+        dct['__class__'] = type(self).__name__
+        dct['created_at'] = dct['created_at'].isoformat()
+        dct['updated_at'] = dct['updated_at'].isoformat()
         return dct
