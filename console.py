@@ -211,7 +211,9 @@ class HBNBCommand(cmd.Cmd):
             attribute_name = shlex.split(inputs[0])[0]
             attribute_value = inputs[1].strip()[:-1]
             line = f"{class_name} {values[1].split('(')[0]} {attribute_name} \"{attribute_value}\""
-            self.do_update_dict(line.strip())
+            self.do_update_dict(
+                class_name, shlex.split(inputs[0])[0], inputs[1].strip()[:-1]
+            )
             return
 
         try:
