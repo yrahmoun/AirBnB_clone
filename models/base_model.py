@@ -33,7 +33,8 @@ class BaseModel:
     def __str__(self):
         """return a string representation of BaseModel instance"""
         name = self.__class__.__name__
-        return "[{}] ({}) {}".format(name, self.id, self.__dict__)
+        return "[{}] ({}) {}".format(type(self).__name__,
+                                     self.id, self.__dict__)
 
     def save(self):
         """changes the updated_at attribute"""
