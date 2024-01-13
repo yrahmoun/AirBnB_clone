@@ -10,6 +10,7 @@ from models.place import Place
 from models.review import Review
 from models.state import State
 from models.amenity import Amenity
+from json.decoder import JSONDecodeError
 
 
 class FileStorage:
@@ -48,5 +49,5 @@ class FileStorage:
             for key, value in data.items():
                 obj = self.classes[value['__class__']](**value)
                 self.__objects[key] = obj
-        except FileNotFoundError:
+        except (FileNotFoundError, JSONDecodeError):
             pass
