@@ -239,36 +239,43 @@ class HBNBCommand(cmd.Cmd):
         """
         if not arg:
             print("** class name missing **")
-            return
+        return
+
         update_data = "{" + arg.split("{")[1]
         update_tokens = shlex.split(arg)
         storage.reload()
         all_objects = storage.all()
+
         if update_tokens[0] not in HBNBCommand.valid_classes.keys():
             print("** class doesn't exist **")
             return
+
         if len(update_tokens) == 1:
             print("** instance id missing **")
             return
+
         try:
             key = update_tokens[0] + "." + update_tokens[1]
             all_objects[key]
         except KeyError:
             print("** no instance found **")
             return
+
         if update_data == "{":
             print("** attribute name missing **")
             return
 
         update_data = update_data.replace("'", '"')
         update_data = json.loads(update_data)
-        instance = all_objects[key]
-        for key_name in update_data:
-            if hasattr(instance, key_name):
-                attr_type = type(getattr(instance, key_name))
-                setattr(instance, key_name, update_data[key_name])
+        my_instance = all_objects[key]
+
+        for my_key in update_data:
+            if hasattr(my_instance, my_key):
+                attr_type = type(getattr(my_instance, my_key))
+                setattr(my_instance, my_key, update_data[my_key])
             else:
-                setattr(instance, key_name, update_data[key_name])
+                setattr(my_instance, my_key, update_data[my_key])
+
         storage.save()
 
 
