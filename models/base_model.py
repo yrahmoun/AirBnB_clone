@@ -42,8 +42,8 @@ class BaseModel:
 
     def to_dict(self):
         """converts the BaseModel instance to a dictionary"""
-        dct = self.__dict__.copy()
-        dct["__class__"] = self.__class__.__name__
-        dct["created_at"] = self.created_at.isoformat()
-        dct["updated_at"] = self.updated_at.isoformat()
+        dct = {**self.__dict__}
+        dct['__class__'] = type(self).__name__
+        dct['created_at'] = dct['created_at'].isoformat()
+        dct['updated_at'] = dct['updated_at'].isoformat()
         return dct
