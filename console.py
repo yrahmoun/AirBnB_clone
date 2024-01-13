@@ -186,7 +186,7 @@ class HBNBCommand(cmd.Cmd):
         print(instance_count)
 
     def default(self, arg):
-        """Handle new ways of inputting data"""
+        """<classname>.func()"""
         val_dict = {
             "all": self.do_all,
             "count": self.do_count,
