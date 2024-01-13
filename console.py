@@ -173,7 +173,17 @@ class HBNBCommand(cmd.Cmd):
         instance.save()
 
     def do_count(self, arg):
-        pass
+        """
+        Counts the instances of a specific class.
+        """
+        instance_count = 0
+        all_objects = storage.all()
+
+        for obj_key in all_objects:
+            if arg in obj_key:
+                instance_count += 1
+
+        print(instance_count)
 
     def default(self, arg):
         """Handle new ways of inputting data"""
