@@ -211,7 +211,7 @@ class HBNBCommand(cmd.Cmd):
             attribute_name = shlex.split(inputs[0])[0]
             attribute_value = inputs[1].strip()[:-1]
             line = f"{class_name} {values[1].split('(')[0]} {attribute_name} \"{attribute_value}\""
-            self.do_update(line.strip())
+            self.do_update_dict(line.strip())
             return
 
         try:
@@ -229,6 +229,47 @@ class HBNBCommand(cmd.Cmd):
 
         if command in val_dict:
             val_dict[command](line.strip())
+
+    def do_update_dict(self, arg):
+        """
+        Update your command interpreter (console.py) to update
+        an instance based on his ID with a
+        dictionary: <class name>.update(<id>, <dictionary representation>).
+        Errors management must be the same as previously.
+        """
+        if not arg:
+            print("** class name missing **")
+            return
+        update_data = "{" + arg.split("{")[1]
+        update_tokens = shlex.split(arg)
+        storage.reload()
+        all_objects = storage.all()
+        if update_tokens[0] not in HBNBCommand.valid_classes.keys():
+            print("** class doesn't exist **")
+            return
+        if len(update_tokens) == 1:
+            print("** instance id missing **")
+            return
+        try:
+            key = update_tokens[0] + "." + update_tokens[1]
+            all_objects[key]
+        except KeyError:
+            print("** no instance found **")
+            return
+        if update_data == "{":
+            print("** attribute name missing **")
+            return
+
+        update_data = update_data.replace("'", '"')
+        update_data = json.loads(update_data)
+        instance = all_objects[key]
+        for key_name in update_data:
+            if hasattr(instance, key_name):
+                attr_type = type(getattr(instance, key_name))
+                setattr(instance, key_name, update_data[key_name])
+            else:
+                setattr(instance, key_name, update_data[key_name])
+        storage.save()
 
 
 if __name__ == "__main__":
