@@ -172,6 +172,54 @@ class HBNBCommand(cmd.Cmd):
         instance.updated_at = datetime.utcnow()
         instance.save()
 
+    def do_count(self, arg):
+        pass
+
+    def default(self, arg):
+        """Handle new ways of inputting data"""
+        val_dict = {
+            "all": self.do_all,
+            "count": self.do_count,
+            "show": self.do_show,
+            "destroy": self.do_destroy,
+            "update": self.do_update,
+        }
+
+        arg = arg.strip()
+        values = arg.split(".")
+        if len(values) != 2:
+            cmd.Cmd.default(self, arg)
+            return
+
+        class_name = values[0]
+        command = values[1].split("(")[0]
+        line = ""
+
+        if command == "update" and values[1].endswith("}"):
+            # If it's an "update" command with a dictionary input
+            inputs = values[1].split("(")[1].rsplit(",", 1)
+            attribute_name = shlex.split(inputs[0])[0]
+            attribute_value = inputs[1].strip()[:-1]
+            line = f"{class_name} {values[1].split('(')[0]} {attribute_name} \"{attribute_value}\""
+            self.do_update(line.strip())
+            return
+
+        try:
+            inputs = values[1].split("(")[1].split(",")
+            for num in range(len(inputs)):
+                if num != len(inputs) - 1:
+                    line += f" {shlex.split(inputs[num])[0]}"
+                else:
+                    line += f" {shlex.split(inputs[num][0:-1])[0]}"
+        except IndexError:
+            inputs = ""
+            line = ""
+
+        line = f"{class_name}{line}"
+
+        if command in val_dict:
+            val_dict[command](line.strip())
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
